@@ -3,8 +3,12 @@ package com.example.android.shoppinglist.presentation
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.ListAdapter
 import com.example.android.shoppinglist.R
+import com.example.android.shoppinglist.databinding.ItemShopDiasbledBinding
+import com.example.android.shoppinglist.databinding.ItemShopEnabledBinding
 import com.example.android.shoppinglist.domain.ShopItem
 
 class ShopListAdapter :
@@ -34,30 +38,41 @@ class ShopListAdapter :
             else -> throw RuntimeException("Unknown view type $viewType")
         }
 
-        val view = LayoutInflater.from(parent.context).inflate(
-            layout,
-            parent,
-            false
-        )
-        return ShopItemViewHolder(view)
+        val binding =
+            DataBindingUtil.inflate<ViewDataBinding>(
+                LayoutInflater.from(parent.context),
+                layout,
+                parent,
+                false
+            )
+        return ShopItemViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
         Log.d("ShopListAdapter", "ShopListAdapter ${count++}")
 
 //        val shopItem = shopList[position]
+        val binding = holder.binding
         val shopItem = getItem(position)
-        holder.tvName.text = shopItem.name
-        holder.tvCount.text = shopItem.count.toString()
-        holder.itemView.setOnLongClickListener {
+        when (binding) {
+            is ItemShopDiasbledBinding -> {
+                binding.tvName.text = shopItem.name
+                binding.tvCount.text = shopItem.count.toString()
+            }
+
+            is ItemShopEnabledBinding -> {
+                binding.tvName.text = shopItem.name
+                binding.tvCount.text = shopItem.count.toString()
+            }
+        }
+        binding.root.setOnLongClickListener {
             //invoke if shopItem != null
             onShopItemLongClickListener?.invoke(shopItem)
             true
         }
-        holder.itemView.setOnClickListener {
+        binding.root.setOnClickListener {
             //invoke if shopItem != null
             onShopItemClickListener?.invoke(shopItem)
-            true
         }
         /*if (shopItem.enabled) {
             holder.tvName.setTextColor(
