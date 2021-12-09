@@ -56,13 +56,11 @@ class ShopListAdapter :
         val shopItem = getItem(position)
         when (binding) {
             is ItemShopDiasbledBinding -> {
-                binding.tvName.text = shopItem.name
-                binding.tvCount.text = shopItem.count.toString()
+                binding.shopItem = shopItem
             }
 
             is ItemShopEnabledBinding -> {
-                binding.tvName.text = shopItem.name
-                binding.tvCount.text = shopItem.count.toString()
+                binding.shopItem = shopItem
             }
         }
         binding.root.setOnLongClickListener {
